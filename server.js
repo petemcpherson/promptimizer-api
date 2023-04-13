@@ -21,6 +21,12 @@ app.use((req, res, next) => {
     next()
 });
 
+const cors = require('cors');
+app.use(cors({
+  origin: 'http://localhost:3000'
+}));
+
+
 
 // routes
 app.use('/api/brands', brandsRouter);
