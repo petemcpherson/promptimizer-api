@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 
 const cors = require('cors');
 app.use(cors({
-  origin: 'http://localhost:3000'
+    origin: process.env.API_URL
 }));
 
 
