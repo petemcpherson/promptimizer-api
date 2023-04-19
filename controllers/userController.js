@@ -1,5 +1,17 @@
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
+const AWS = require('aws-sdk');
+const bcrypt = require('bcrypt');
+
+
+// configure AWS
+AWS.config.update({
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_SECRET_KEY,
+    region: process.env.AWS_SES_REGION
+});
+
+const ses = new AWS.SES({ apiVersion: '2010-12-01' });
 
 // tokens
 
@@ -7,6 +19,68 @@ const createToken = (_id) => {
     return jwt.sign({ _id }, process.env.SECRET, { expiresIn: '7d' });
 }
 
+
+// password reset
+
+const initiatePasswordReset = async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(400).json({ error: 'User does not exist' });
+        }
+
+        const token = createToken(user._id);
+        // might need to change this email
+        const resetUrl = `${process.env.API_URL}/api/user/reset-password/${token}`;
+        const mailOptions = {
+            Source: 'pete@doyouevenblog.com',
+            Destination: {
+                ToAddresses: [email],
+            },
+            Message: {
+                Subject: {
+                    Data: 'Password Reset',
+                },
+                Body: {
+                    Text: {
+                        Data: `Please use the following link to reset your password: ${resetUrl}`,
+                    },
+                },
+            },
+        };
+
+        ses.sendEmail(mailOptions, (err, data) => {
+            if (err) {
+                console.log(err);
+                return res.status(400).json({ error: 'Error sending email' });
+            } else {
+                console.log(data);
+                return res.status(200).json({ message: 'Email sent' });
+            }
+        });
+
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
+
+const resetPassword = async (req, res) => {
+    const { token } = req.params;
+    const { newPassword } = req.body;
+
+    try {
+        const decoded = jwt.verify(token, process.env.SECRET);
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        // might just be decoded._id below
+        const user = await User.findOneAndUpdate({ _id: decoded._id }, { password: hashedPassword }, { new: true });
+        res.status(200).json({ message: 'Password updated' });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
 
 // login user
 
@@ -45,4 +119,4 @@ const signupUser = async (req, res) => {
 }
 
 
-module.exports = { loginUser, signupUser }
+module.exports = { loginUser, signupUser, initiatePasswordReset, resetPassword };

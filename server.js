@@ -1,9 +1,17 @@
 require('dotenv').config();
+const fs = require('fs');
+const dotenv = require('dotenv');
+
 const brandsRouter = require('./routes/brands');
 const userRoutes = require('./routes/user');
 const postRoutes = require('./routes/posts');
 const path = require('path');
 
+if (fs.existsSync('.env.local')) {
+    dotenv.config({ path: '.env.local' });
+  } else {
+    dotenv.config();
+  }
 
 // const { Router } = require('express');
 const express = require('express');
