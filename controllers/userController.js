@@ -73,14 +73,19 @@ const resetPassword = async (req, res) => {
 
     try {
         const decoded = jwt.verify(token, process.env.SECRET);
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
-        // might just be decoded._id below
-        const user = await User.findOneAndUpdate({ _id: decoded._id }, { password: hashedPassword }, { new: true });
+        const user = await User.findById(decoded._id);
+
+        if (!user) {
+            return res.status(400).json({ error: 'User not found' });
+        }
+
+        await user.resetPassword(newPassword);
         res.status(200).json({ message: 'Password updated' });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 }
+
 
 // login user
 

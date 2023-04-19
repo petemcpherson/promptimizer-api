@@ -78,6 +78,12 @@ userSchema.statics.login = async function (email, password) {
     }
 
     return user;
+    // instance method for resetting password
+    userSchema.methods.resetPassword = async function (password) {
+        this.password = await bcrypt.hash(password, 12);
+        await this.save();
+    }
+
 }
 
 
