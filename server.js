@@ -1,7 +1,6 @@
 require('dotenv').config();
 const fs = require('fs');
 const dotenv = require('dotenv');
-
 const brandsRouter = require('./routes/brands');
 const userRoutes = require('./routes/user');
 const postRoutes = require('./routes/posts');
