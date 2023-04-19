@@ -34,7 +34,7 @@ const initiatePasswordReset = async (req, res) => {
 
         const token = createToken(user._id);
         // might need to change this email
-        const resetUrl = `${process.env.API_URL}/api/user/reset-password/${token}`;
+        const resetUrl = `${process.env.PUBLIC_URL}/reset-password/${token}`;
         const mailOptions = {
             Source: 'pete@doyouevenblog.com',
             Destination: {
