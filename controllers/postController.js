@@ -32,7 +32,7 @@ const createPost = async (req, res) => {
     if (!keyword) {
         emptyFields.push('keyword');
     }
-   
+
 
     if (emptyFields.length > 0) {
         return res.status(400).json({ error: `Please fill in the following fields: ${emptyFields.join(', ')}`, emptyFields });
@@ -87,10 +87,32 @@ const updatePost = async (req, res) => {
     res.status(200).json(post);
 }
 
+// update chat history
+const updateChatHistory = async (req, res) => {
+    const { id } = req.params;
+    const { chatHistory } = req.body;
+
+    if (!Mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ mssg: 'Post not found' });
+    }
+
+    try {
+        const post = await Post.findOneAndUpdate({ _id: id }, {
+            chatHistory
+        }, { new: true });
+
+        res.status(200).json(post);
+    } catch (err) {
+        res.status(400).json({ mssg: err.message });
+    }
+};
+
+
 module.exports = {
     getAllPosts,
     getPost,
     createPost,
     deletePost,
-    updatePost
+    updatePost,
+    updateChatHistory
 }

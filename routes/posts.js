@@ -4,7 +4,8 @@ const {
     getPost,
     createPost,
     deletePost,
-    updatePost
+    updatePost,
+    updateChatHistory
 } = require('../controllers/postController');
 
 const requireAuth = require('../middleware/requireAuth');
@@ -30,5 +31,8 @@ router.patch('/:id', updatePost);
 
 // DELETE A POST
 router.delete('/:id', deletePost);
+
+// UPDATE CHAT HISTORY
+router.put('/:id/update-chat-history', updateChatHistory);
 
 module.exports = router;
