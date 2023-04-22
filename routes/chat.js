@@ -1,6 +1,8 @@
 const express = require('express');
-const { chatGPT } = require('../controllers/chatController');
 const requireAuth = require('../middleware/requireAuth');
+// import the completion function from the chatController file
+const { chatCompletion } = require('../controllers/chatController');
+
 
 const router = express.Router();
 
@@ -13,7 +15,7 @@ router.use(requireAuth);
 router.post('/', (req, res, next) => {
     console.log('Request received at /api/chat');
     next();
-  }, chatGPT);
+  }, chatCompletion);
   
 
 module.exports = router;
