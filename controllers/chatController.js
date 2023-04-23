@@ -16,10 +16,10 @@ const chatCompletion = async (req, res) => {
   const completion = await openai.createChatCompletion({
     model: 'gpt-3.5-turbo',
     messages: [
-        { 'role': 'system', 'content': 'You are blogGPT, a helpful assistant to write blog posts' },
-        ...messages.map(({ role, content }) => ({ role, content }))
+      { 'role': 'system', 'content': 'You are blogGPT, a helpful assistant to write blog posts' },
+      ...messages.map(({ role, content }) => ({ role, content }))
     ]
-});
+  });
 
 
   res.json({
