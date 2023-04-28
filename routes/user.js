@@ -22,4 +22,5 @@ router.post('/forgot-password', initiatePasswordReset)
 
 router.put('/reset-password/:token', resetPassword)
 
+
 module.exports = router;

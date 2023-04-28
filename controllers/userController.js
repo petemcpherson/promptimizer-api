@@ -1,4 +1,5 @@
 const User = require('../models/userModel');
+const Prompt = require('../models/promptModel');
 const jwt = require('jsonwebtoken');
 const AWS = require('aws-sdk');
 const bcrypt = require('bcrypt');
@@ -117,6 +118,14 @@ const signupUser = async (req, res) => {
 
     try {
         const user = await User.signup(firstName, lastName, email, password);
+
+        // Assign default prompts to the new user
+        const defaultPrompts = require('../config/defaultPrompts');
+        const userPrompts = defaultPrompts.map((prompt) => ({
+            ...prompt,
+            user: user._id,
+        }));
+        await Prompt.insertMany(userPrompts);
 
         //create a token
         const token = createToken(user._id);

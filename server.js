@@ -5,6 +5,7 @@ const brandsRouter = require('./routes/brands');
 const userRoutes = require('./routes/user');
 const postRoutes = require('./routes/posts');
 const chatRoutes = require('./routes/chat');
+const promptRoutes = require('./routes/prompts');
 const path = require('path');
 
 if (fs.existsSync('.env.local')) {
@@ -59,6 +60,7 @@ app.use('/api/brands', brandsRouter);
 app.use('/api/user', userRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/prompts', promptRoutes);
 
 
 // serve static files from react frontend if in production
