@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const validate = require('validator');
-const defaultPrompts = require('../config/defaultPrompts');
 
 const Schema = mongoose.Schema;
 
@@ -52,7 +51,7 @@ userSchema.statics.signup = async function (firstName, lastName, email, password
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
 
-    const user = await this.create({ firstName, lastName, email, password: hash, prompts: defaultPrompts });
+    const user = await this.create({ firstName, lastName, email, password: hash });
 
     return user;
 }
@@ -79,8 +78,6 @@ userSchema.statics.login = async function (email, password) {
     }
 
     return user;
-
-
 }
 
 // instance method for resetting password
@@ -88,10 +85,6 @@ userSchema.methods.resetPassword = async function (newPassword) {
     this.password = await bcrypt.hash(newPassword, 12);
     await this.save();
 }
-
-
-
-
 
 
 module.exports = mongoose.model('User', userSchema);
