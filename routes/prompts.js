@@ -1,7 +1,10 @@
 const express = require('express');
 const {
     getUserPrompts,
+    getPrompt,
     addPrompt,
+    deletePrompt,
+    updatePrompt
 } = require('../controllers/promptController');
 
 const requireAuth = require('../middleware/requireAuth');
@@ -17,8 +20,20 @@ router.use(requireAuth);
 
 router.get('/', getUserPrompts);
 
+// GET A SPECIFIC PROMPT
+
+router.get('/:id', getPrompt);
+
 // ADD A NEW PROMPT
 
 router.post('/', addPrompt);
+
+// DELETE A PROMPT
+
+router.delete('/:id', deletePrompt);
+
+// UPDATE A PROMPT
+
+router.patch('/:id', updatePrompt);
 
 module.exports = router;
