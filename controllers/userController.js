@@ -119,16 +119,50 @@ const signupUser = async (req, res) => {
     try {
         const user = await User.signup(firstName, lastName, email, password);
 
+        //create a token
+        const token = createToken(user._id);
+
         // Assign default prompts to the new user
-        const defaultPrompts = require('../config/defaultPrompts');
+        // const defaultPrompts = require('../config/defaultPrompts');
+        const defaultPrompts = [
+            {
+                text: `I want to write an article. Here are some details:
+        
+        Title: {post.keyword}
+        My brand: {selectedBrand.description}
+        My writing style: {selectedBrand.style}
+        Formatting: I want you to format everything in Markdown.
+        
+        Don't actually write the post or outline yet. Do you understand? A simple yes or no will do.`,
+                category: 'intro',
+                description: 'test description'
+            },
+            {
+                text: `Here is some more information needed to write this article:
+        
+        {post.factOne}
+        {post.factTwo}
+        {post.factThree}
+        {post.factFour}
+        {post.factFive}
+        
+        I want you to rely on this information to write the article. Do you understand? A simple yes or no will do.`,
+                category: 'intro',
+                description: 'test description'
+            },
+
+
+
+
+        ]
         const userPrompts = defaultPrompts.map((prompt) => ({
             ...prompt,
             user_id: user._id,
         }));
+
+        // for each prompt in userPrompts, create a new prompt in the database
         await Prompt.insertMany(userPrompts);
 
-        //create a token
-        const token = createToken(user._id);
         res.status(201).json({ email, token });
     } catch (error) {
         res.status(400).json({ error: error.message });
