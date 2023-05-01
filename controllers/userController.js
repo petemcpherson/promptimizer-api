@@ -123,7 +123,7 @@ const signupUser = async (req, res) => {
         const defaultPrompts = require('../config/defaultPrompts');
         const userPrompts = defaultPrompts.map((prompt) => ({
             ...prompt,
-            user: user._id,
+            user_id: user._id,
         }));
         await Prompt.insertMany(userPrompts);
 
