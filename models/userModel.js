@@ -97,21 +97,11 @@ userSchema.methods.resetPassword = async function (newPassword) {
 }
 
 userSchema.methods.updateTokenUsage = async function (tokens) {
-    const today = new Date();
-    const resetDate = new Date(this.tokenUsage.resetDate);
-
-    if ((today.getMonth() !== resetDate.getMonth() || today.getFullYear() !== resetDate.getFullYear()) && today.getDate() === 1) {
-        // Reset the token usage if the current month and year are different from the reset date
-        // and it is the first day of the month
-        this.tokenUsage.totalTokens = tokens;
-        this.tokenUsage.resetDate = today;
-    } else {
-        // Otherwise, just update the total tokens
-        this.tokenUsage.totalTokens += tokens;
-    }
-
+    // Update the total tokens
+    this.tokenUsage.totalTokens += tokens;
     await this.save();
 };
+
 
 
 
