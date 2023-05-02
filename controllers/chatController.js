@@ -11,7 +11,7 @@ const chatCompletion = async (req, res) => {
 
   const { messages } = req.body;
 
-  console.log(messages)
+  // console.log(messages)
 
   const completion = await openai.createChatCompletion({
     model: 'gpt-3.5-turbo',
@@ -21,11 +21,12 @@ const chatCompletion = async (req, res) => {
     ]
   });
 
+  const totalTokens = completion.data.usage.total_tokens;
 
   res.json({
-    completion: completion.data.choices[0].message
+    completion: completion.data.choices[0].message,
+    totalTokens: totalTokens
   })
-
 
 }
 
