@@ -22,6 +22,16 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    tokenUsage: {
+        totalTokens: {
+            type: Number,
+            default: 0
+        },
+        resetDate: {
+            type: Date,
+            default: Date.now
+        }
+    }
 });
 
 // static model for User
@@ -85,6 +95,25 @@ userSchema.methods.resetPassword = async function (newPassword) {
     this.password = await bcrypt.hash(newPassword, 12);
     await this.save();
 }
+
+userSchema.methods.updateTokenUsage = async function (tokens) {
+    const today = new Date();
+    const resetDate = new Date(this.tokenUsage.resetDate);
+
+    if ((today.getMonth() !== resetDate.getMonth() || today.getFullYear() !== resetDate.getFullYear()) && today.getDate() === 1) {
+        // Reset the token usage if the current month and year are different from the reset date
+        // and it is the first day of the month
+        this.tokenUsage.totalTokens = tokens;
+        this.tokenUsage.resetDate = today;
+    } else {
+        // Otherwise, just update the total tokens
+        this.tokenUsage.totalTokens += tokens;
+    }
+
+    await this.save();
+};
+
+
 
 
 module.exports = mongoose.model('User', userSchema);
