@@ -127,5 +127,17 @@ const signupUser = async (req, res) => {
     }
 }
 
+const resetAllUsersTokenUsage = async () => {
+    const now = new Date();
+    const update = {
+      'tokenUsage.totalTokens': 0,
+      'tokenUsage.resetDate': now,
+    };
+  
+    // Update all users in the database
+    await User.updateMany({}, { $set: update });
+  };
+  
 
-module.exports = { loginUser, signupUser, initiatePasswordReset, resetPassword };
+
+module.exports = { loginUser, signupUser, initiatePasswordReset, resetPassword, resetAllUsersTokenUsage };

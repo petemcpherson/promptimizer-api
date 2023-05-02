@@ -7,12 +7,14 @@ const postRoutes = require('./routes/posts');
 const chatRoutes = require('./routes/chat');
 const promptRoutes = require('./routes/prompts');
 const path = require('path');
+const cron = require('node-cron');
+const { resetAllUsersTokenUsage } = require('./controllers/userController');
 
 if (fs.existsSync('.env.local')) {
     dotenv.config({ path: '.env.local' });
-  } else {
+} else {
     dotenv.config();
-  }
+}
 
 // const { Router } = require('express');
 const express = require('express');
@@ -52,8 +54,8 @@ app.use(cors());
 app.all('*', (req, res, next) => {
     console.log(`Incoming request: ${req.method} ${req.path}`);
     next();
-  });
-  
+});
+
 
 // routes
 app.use('/api/brands', brandsRouter);
@@ -73,6 +75,15 @@ if (process.env.NODE_ENV === 'production') {
         res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
     });
 }
+
+// crons
+
+// Schedule a task to run at 02:00 on the first day of every month
+cron.schedule('0 2 1 * *', async () => {
+    console.log('Resetting all users token usage');
+    await resetAllUsersTokenUsage();
+});
+
 
 // connect to mongodb
 const dbURI = process.env.MONGO_URI;
