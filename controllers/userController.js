@@ -16,9 +16,16 @@ const ses = new AWS.SES({ apiVersion: '2010-12-01' });
 
 // tokens
 
-const createToken = (_id) => {
-    return jwt.sign({ _id }, process.env.SECRET, { expiresIn: '7d' });
+// old token
+// const createToken = (_id) => {
+//     return jwt.sign({ _id }, process.env.SECRET, { expiresIn: '7d' });
+// }
+
+const createToken = (_id, email) => {
+    const payload = email ? { email } : { _id };
+    return jwt.sign(payload, process.env.SECRET, { expiresIn: '7d' });
 }
+
 
 
 // password reset
@@ -130,14 +137,53 @@ const signupUser = async (req, res) => {
 const resetAllUsersTokenUsage = async () => {
     const now = new Date();
     const update = {
-      'tokenUsage.totalTokens': 0,
-      'tokenUsage.resetDate': now,
+        'tokenUsage.totalTokens': 0,
+        'tokenUsage.resetDate': now,
     };
-  
+
     // Update all users in the database
     await User.updateMany({}, { $set: update });
-  };
-  
+};
+
+// send registration email
+
+const sendRegistrationEmail = async (email) => {
+    const user = await User.findOne({ email });
+
+    if (user) {
+        throw Error('User already exists');
+    }
+
+    const token = createToken(email); // Pass email instead of user._id
+    const registrationUrl = `${process.env.PUBLIC_URL}/register/${token}`;
+    const mailOptions = {
+        Source: 'pete@doyouevenblog.com',
+        Destination: {
+            ToAddresses: [email],
+        },
+        Message: {
+            Subject: {
+                Data: 'Complete Your Registration',
+            },
+            Body: {
+                Text: {
+                    Data: `Please use the following link to complete your registration: ${registrationUrl}`,
+                },
+            },
+        },
+    };
+
+    ses.sendEmail(mailOptions, (err, data) => {
+        if (err) {
+            console.log(err);
+            throw Error('Error sending email');
+        } else {
+            console.log(data);
+        }
+    });
+}
 
 
-module.exports = { loginUser, signupUser, initiatePasswordReset, resetPassword, resetAllUsersTokenUsage };
+
+
+module.exports = { loginUser, signupUser, initiatePasswordReset, resetPassword, resetAllUsersTokenUsage, sendRegistrationEmail };

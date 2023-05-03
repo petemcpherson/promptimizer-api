@@ -8,11 +8,12 @@ const chatRoutes = require('./routes/chat');
 const promptRoutes = require('./routes/prompts');
 const path = require('path');
 const cron = require('node-cron');
-const { resetAllUsersTokenUsage } = require('./controllers/userController');
+const { resetAllUsersTokenUsage, sendRegistrationEmail } = require('./controllers/userController');
 
 // new stripe
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const endpointSecret = process.env.STRIPE_SIGNING_SECRET;
+const User = require('./models/userModel');
 
 if (fs.existsSync('.env.local')) {
     dotenv.config({ path: '.env.local' });
@@ -40,7 +41,7 @@ app.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (reques
 
     try {
         event = stripe.webhooks.constructEvent(payload, sig, endpointSecret);
-        console.log("got payload & event" + event)
+        // console.log("got payload & event" + event)
     } catch (err) {
         // console.log(err);
         return response.status(400).send(`Webhook Error: ${err.message}`);
@@ -49,15 +50,39 @@ app.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (reques
     switch (event.type) {
         case 'checkout.session.completed':
             const session = event.data.object;
-            const customerEmail = session.customer_email;
+            const customerEmail = session.customer_details.email;
             console.log("Got customer email: " + customerEmail);
+
+            try {
+                await sendRegistrationEmail(customerEmail);
+                console.log("Registration email sent to:", customerEmail);
+            } catch (error) {
+                console.error("Error sending registration email:", error.message);
+            }
+
+
             // console.log("Got session: " + session);
             break;
         default:
-            console.log(`Unhandled event type ${event.type}`);
+            // console.log(`Unhandled event type ${event.type}`);
     }
     response.status(200).end();
 });
+
+// FOR TESTING
+
+// app.post('/test-webhook', bodyParser.json(), async (req, res) => {
+//     const customerEmail = req.body.email;
+
+//     try {
+//         await sendRegistrationEmail(customerEmail);
+//         console.log("Registration email sent to:", customerEmail);
+//         res.status(200).json({ message: "Registration email sent" });
+//     } catch (error) {
+//         console.error("Error sending registration email:", error.message);
+//         res.status(400).json({ error: error.message });
+//     }
+// });
 
 
 
