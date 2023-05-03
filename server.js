@@ -49,7 +49,9 @@ app.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (reques
     switch (event.type) {
         case 'checkout.session.completed':
             const session = event.data.object;
-            console.log("Got session: " + session);
+            const customerEmail = session.customer_email;
+            console.log("Got customer email: " + customerEmail);
+            // console.log("Got session: " + session);
             break;
         default:
             console.log(`Unhandled event type ${event.type}`);
