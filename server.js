@@ -10,6 +10,10 @@ const path = require('path');
 const cron = require('node-cron');
 const { resetAllUsersTokenUsage } = require('./controllers/userController');
 
+// new stripe
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const endpointSecret = process.env.STRIPE_SIGNING_SECRET;
+
 if (fs.existsSync('.env.local')) {
     dotenv.config({ path: '.env.local' });
 } else {
@@ -22,6 +26,37 @@ const mongoose = require('mongoose');
 
 // express app
 const app = express();
+
+const bodyParser = require('body-parser');
+
+// STRIPE STUFF
+
+
+app.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (request, response) => {
+    const payload = request.body;
+    const sig = request.headers['stripe-signature'];
+
+    let event;
+
+    try {
+        event = stripe.webhooks.constructEvent(payload, sig, endpointSecret);
+        console.log("got payload & event" + event)
+    } catch (err) {
+        // console.log(err);
+        return response.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    switch (event.type) {
+        case 'checkout.session.completed':
+            const session = event.data.object;
+            console.log("Got session: " + session);
+            break;
+        default:
+            console.log(`Unhandled event type ${event.type}`);
+    }
+    response.status(200).end();
+});
+
 
 
 // middleware
