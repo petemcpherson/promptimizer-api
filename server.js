@@ -47,24 +47,49 @@ app.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (reques
         return response.status(400).send(`Webhook Error: ${err.message}`);
     }
 
+    const createUserFromWebhook = async (email, fullName, plan) => {
+        const [firstName, lastName] = fullName.split(' ', 2);
+        console.log("Got first name:", firstName);
+        console.log("Got last name:", lastName);
+
+        let user;
+
+        try {
+            user = await User.signup(firstName, lastName, email, 'mRefL$d9NJs&5*TX@5Y', plan);
+
+            console.log("User created successfully");
+        } catch (error) {
+            console.error("Error creating user:", error.message);
+        }
+
+        // Call sendRegistrationEmail after the user is created
+        try {
+            await sendRegistrationEmail(user);
+        } catch (error) {
+            console.log('Error sending registration email:', error.message);
+        }
+    };
+
     switch (event.type) {
         case 'checkout.session.completed':
             const session = event.data.object;
             const customerEmail = session.customer_details.email;
+            const customerName = session.customer_details.name;
             console.log("Got customer email: " + customerEmail);
+            console.log("Got customer name:", customerName);
+
 
             try {
-                await sendRegistrationEmail(customerEmail);
-                console.log("Registration email sent to:", customerEmail);
+                await createUserFromWebhook(customerEmail, customerName, "pro");
             } catch (error) {
-                console.error("Error sending registration email:", error.message);
+                console.error("Error creating user:", error.message);
             }
 
 
             // console.log("Got session: " + session);
             break;
         default:
-            // console.log(`Unhandled event type ${event.type}`);
+        // console.log(`Unhandled event type ${event.type}`);
     }
     response.status(200).end();
 });

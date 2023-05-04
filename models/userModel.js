@@ -31,6 +31,10 @@ const userSchema = new Schema({
             type: Date,
             default: Date.now
         }
+    },
+    plan: {
+        type: String,
+        default: 'free'
     }
 });
 
