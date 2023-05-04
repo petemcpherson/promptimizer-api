@@ -25,7 +25,7 @@ const getPost = async (req, res) => {
 // create a new post
 
 const createPost = async (req, res) => {
-    const { keyword, factOne, factTwo, factThree, factFour, factFive, faqOne, faqTwo, faqThree, faqFour, faqFive } = req.body;
+    const { keyword, facts, faqs } = req.body;
 
     let emptyFields = [];
 
@@ -42,16 +42,8 @@ const createPost = async (req, res) => {
         const user_id = req.user._id;
         const post = await Post.create({
             keyword,
-            factOne,
-            factTwo,
-            factThree,
-            factFour,
-            factFive,
-            faqOne,
-            faqTwo,
-            faqThree,
-            faqFour,
-            faqFive,
+            facts,
+            faqs,
             user_id
         });
         res.status(201).json(post);

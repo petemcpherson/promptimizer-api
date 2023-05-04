@@ -24,44 +24,12 @@ const PostSchema = new Schema({
         type: String,
         required: true
     },
-    factOne: {
-        type: String,
+    facts: {
+        type: [String],
         required: false
     },
-    factTwo: {
-        type: String,
-        required: false
-    },
-    factThree: {
-        type: String,
-        required: false
-    },
-    factFour: {
-        type: String,
-        required: false
-    },
-    factFive: {
-        type: String,
-        required: false
-    },
-    faqOne: {
-        type: String,
-        required: false
-    },
-    faqTwo: {
-        type: String,
-        required: false
-    },
-    faqThree: {
-        type: String,
-        required: false
-    },
-    faqFour: {
-        type: String,
-        required: false
-    },
-    faqFive: {
-        type: String,
+    faqs: {
+        type: [String],
         required: false
     },
     user_id: {
