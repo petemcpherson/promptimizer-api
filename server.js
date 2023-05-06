@@ -48,7 +48,10 @@ app.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (reques
     }
 
     const createUserFromWebhook = async (email, fullName, plan) => {
-        const [firstName, lastName] = fullName.split(' ', 2);
+        // const [firstName, lastName] = fullName.split(' ', 2);
+        const nameParts = fullName.split(' ');
+        const firstName = nameParts.shift();
+        const lastName = nameParts.join(' ');
         console.log("Got first name:", firstName);
         console.log("Got last name:", lastName);
 
