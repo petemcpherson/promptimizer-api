@@ -146,68 +146,68 @@ const loginUser = async (req, res) => {
 
 // signup user
 
-const signupUser = async (req, res) => {
+// const signupUser = async (req, res) => {
 
-    const { firstName, lastName, email, password, token, plan } = req.body;
+//     const { firstName, lastName, email, password, token, plan } = req.body;
 
-    // Check for the token
-    if (!token) {
-        return res.status(400).json({ error: 'Token is missing' });
-    }
+//     // Check for the token
+//     if (!token) {
+//         return res.status(400).json({ error: 'Token is missing' });
+//     }
 
-    // Verify the token
-    try {
-        jwt.verify(token, process.env.SECRET);
-        console.log('Token verified')
-    } catch (error) {
-        return res.status(400).json({ error: 'Invalid token' });
-    }
+//     // Verify the token
+//     try {
+//         jwt.verify(token, process.env.SECRET);
+//         console.log('Token verified')
+//     } catch (error) {
+//         return res.status(400).json({ error: 'Invalid token' });
+//     }
 
-    try {
-        const user = await User.signup(firstName, lastName, email, password);
-        // weird one
-        await User.findByIdAndUpdate(user._id, { plan });
+//     try {
+//         const user = await User.signup(firstName, lastName, email, password);
+//         // weird one
+//         await User.findByIdAndUpdate(user._id, { plan });
 
-        //create a token
-        const token = createToken(user._id);
+//         //create a token
+//         const token = createToken(user._id);
 
-        //email stuff
+//         //email stuff
 
-        const registrationUrl = `${process.env.PUBLIC_URL}/signup/${token}`;
-        const mailOptions = {
-            Source: 'pete@doyouevenblog.com',
-            Destination: {
-                ToAddresses: [email],
-            },
-            Message: {
-                Subject: {
-                    Data: 'Complete Your Registration',
-                },
-                Body: {
-                    Text: {
-                        Data: `Please use the following link to complete your registration: ${registrationUrl}`,
-                    },
-                },
-            },
-        };
+//         const registrationUrl = `${process.env.PUBLIC_URL}/signup/${token}`;
+//         const mailOptions = {
+//             Source: 'pete@doyouevenblog.com',
+//             Destination: {
+//                 ToAddresses: [email],
+//             },
+//             Message: {
+//                 Subject: {
+//                     Data: 'Complete Your Registration',
+//                 },
+//                 Body: {
+//                     Text: {
+//                         Data: `Please use the following link to complete your registration: ${registrationUrl}`,
+//                     },
+//                 },
+//             },
+//         };
 
-        ses.sendEmail(mailOptions, (err, data) => {
-            if (err) {
-                console.log(err);
-                return res.status(400).json({ error: 'Error sending email' });
-            } else {
-                console.log(data);
-                return res.status(200).json({ message: 'Email sent' });
-            }
-        });
+//         ses.sendEmail(mailOptions, (err, data) => {
+//             if (err) {
+//                 console.log(err);
+//                 return res.status(400).json({ error: 'Error sending email' });
+//             } else {
+//                 console.log(data);
+//                 return res.status(200).json({ message: 'Email sent' });
+//             }
+//         });
 
 
-        res.status(201).json({ email, token });
+//         res.status(201).json({ email, token });
 
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-}
+//     } catch (error) {
+//         res.status(400).json({ error: error.message });
+//     }
+// }
 
 const validateToken = async (req, res) => {
     const { token } = req.params;
@@ -253,9 +253,10 @@ const sendRegistrationEmail = async (user) => {
             },
             Body: {
                 Text: {
-                    Data: `Hey hey! A BIG WELCOME to Promptimizer! But before you do anything else, you 100% HAVE to use the following link to complete your registration: ${registrationUrl}
+                    Data: `Hey hey! A BIG WELCOME to Promptimizer!
+                    <br>But before you do anything else, you 100% HAVE to use the following link to complete your registration: ${registrationUrl} <br>
                     
-After you set a password there, you can log in and use the app.
+After you set a password there, you can log in and use the app.<br>
 ~Pete "Promptimizer" McPherson`,
                 },
             },
