@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { loginUser, signupUser, initiatePasswordReset, resetPassword, validateToken } = require('../controllers/userController');
+const { loginUser, initiatePasswordReset, resetPassword, validateToken } = require('../controllers/userController');
 
 const router = express.Router();
 
@@ -12,7 +12,7 @@ router.post('/login', loginUser)
 
 // SIGNUP
 
-router.post('/signup', signupUser)
+// router.post('/signup', signupUser)
 
 // initiate password reset
 

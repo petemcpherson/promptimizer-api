@@ -276,4 +276,4 @@ After you set a password there, you can log in and use the app.<br>
 
 
 
-module.exports = { loginUser, signupUser, initiatePasswordReset, resetPassword, resetAllUsersTokenUsage, validateToken, sendRegistrationEmail };
+module.exports = { loginUser, initiatePasswordReset, resetPassword, resetAllUsersTokenUsage, validateToken, sendRegistrationEmail };
