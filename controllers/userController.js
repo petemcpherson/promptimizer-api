@@ -254,9 +254,11 @@ const sendRegistrationEmail = async (user) => {
             Body: {
                 Text: {
                     Data: `Hey hey! A BIG WELCOME to Promptimizer!
-                    <br>But before you do anything else, you 100% HAVE to use the following link to complete your registration: ${registrationUrl} <br>
+
+But before you do anything else, you 100% HAVE to use the following link to complete your registration: ${registrationUrl} 
                     
-After you set a password there, you can log in and use the app.<br>
+After you set a password there, you can log in and use the app.
+
 ~Pete "Promptimizer" McPherson`,
                 },
             },
