@@ -243,7 +243,7 @@ const sendRegistrationEmail = async (user) => {
     const token = createToken(user._id);
     const registrationUrl = `${process.env.PUBLIC_URL}/signup/${token}`;
     const mailOptions = {
-        Source: 'pete@doyouevenblog.com',
+        Source: 'Promptimizer <pete@doyouevenblog.com>',
         Destination: {
             ToAddresses: [user.email],
         },
