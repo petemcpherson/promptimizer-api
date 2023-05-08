@@ -97,21 +97,6 @@ app.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (reques
     response.status(200).end();
 });
 
-// FOR TESTING
-
-// app.post('/test-webhook', bodyParser.json(), async (req, res) => {
-//     const customerEmail = req.body.email;
-
-//     try {
-//         await sendRegistrationEmail(customerEmail);
-//         console.log("Registration email sent to:", customerEmail);
-//         res.status(200).json({ message: "Registration email sent" });
-//     } catch (error) {
-//         console.error("Error sending registration email:", error.message);
-//         res.status(400).json({ error: error.message });
-//     }
-// });
-
 
 
 // middleware

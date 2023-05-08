@@ -255,7 +255,8 @@ const sendRegistrationEmail = async (user) => {
                 Text: {
                     Data: `Hey hey! A BIG WELCOME to Promptimizer! But before you do anything else, you 100% HAVE to use the following link to complete your registration: ${registrationUrl}
                     
-After you set a password there, you can log in and use the app.`,
+After you set a password there, you can log in and use the app.
+~Pete "Promptimizer" McPherson`,
                 },
             },
         },
@@ -270,9 +271,6 @@ After you set a password there, you can log in and use the app.`,
         }
     });
 };
-
-// module.exports = { loginUser, signupUser, initiatePasswordReset, resetPassword, resetAllUsersTokenUsage, validateToken, sendRegistrationEmail };
-
 
 
 
