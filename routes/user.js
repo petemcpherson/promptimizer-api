@@ -1,6 +1,8 @@
 const express = require('express');
 
-const { loginUser, initiatePasswordReset, resetPassword, validateToken } = require('../controllers/userController');
+const { loginUser, initiatePasswordReset, resetPassword, validateToken, getUserPlan } = require('../controllers/userController');
+
+const requireAuth = require('../middleware/requireAuth');
 
 const router = express.Router();
 
@@ -26,5 +28,8 @@ router.put('/reset-password/:token', resetPassword)
 
 router.get('/validate-token/:token', validateToken)
 
+// get a user's plan
+
+router.get('/plan', requireAuth ,getUserPlan)
 
 module.exports = router;
