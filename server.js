@@ -83,13 +83,92 @@ app.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (reques
 
 
             try {
-                await createUserFromWebhook(customerEmail, customerName, "pro");
+                await createUserFromWebhook(customerEmail, customerName, "trial");
             } catch (error) {
                 console.error("Error creating user:", error.message);
             }
 
 
             // console.log("Got session: " + session);
+            break;
+        // case 'customer.subscription.created':
+        //     const subscriptionCreated = event.data.object;
+        //     const subscriptionCreatedEmail = subscriptionCreated.customer_email;
+        //     const subscriptionCreatedName = subscriptionCreated.customer_name;
+        //     console.log("Got subscription: " + subscriptionCreated);
+        //     console.log("Got email: " + subscriptionCreatedEmail);
+        //     console.log("Got name: " + subscriptionCreatedName);
+
+        //     try {
+        //         await createUserFromWebhook(subscriptionCreatedEmail, subscriptionCreatedName, "trial");
+        //     } catch (error) {
+        //         console.error("Error creating user:", error.message);
+        //     }
+
+        //     break;
+        case 'customer.subscription.updated':
+            const subscription = event.data.object;
+            const customerId = subscription.customer;
+            const previousAttributes = event.data.previous_attributes;
+
+            try {
+                const customer = await stripe.customers.retrieve(customerId);
+                const customerEmail = customer.email;
+                console.log("Got customer: " + customer);
+                console.log("Got customer email: " + customerEmail);
+
+                if (previousAttributes.status === 'trialing' && subscription.status === 'active') {
+        
+                    const user = await User.findOne({ email: customerEmail });
+    
+                    if (user) {
+                        user.plan = 'pro';
+                        await user.save();
+                    } else {
+                        console.log("Could not find user with email:", customerEmail);
+                    }
+                }
+            } catch (error) {
+                console.error("Error updating user:", error.message);
+            }
+
+           
+           
+
+           
+
+            break;
+        case 'customer.subscription.deleted':
+            const deletedSubscription = event.data.object;
+            const deletedCustomerId = deletedSubscription.customer;
+
+            try {
+                const deletedCustomer = await stripe.customers.retrieve(deletedCustomerId);
+                const deletedCustomerEmail = deletedCustomer.email;
+                console.log("Got deleted customer: " + deletedCustomer);
+                console.log("Got deleted customer email: " + deletedCustomerEmail);
+
+                const user = await User.findOne({ email: deletedCustomerEmail });
+                console.log("Got user: " + user);
+
+                if (user) {
+                    user.plan = 'free';
+                    await user.save();
+                } else {
+                    console.log("Could not find user with email:", deletedCustomerEmail);
+                }
+            } catch (error) {
+                console.error("Error updating user:", error.message);
+            }
+
+
+
+
+
+
+
+
+
             break;
         default:
         // console.log(`Unhandled event type ${event.type}`);
