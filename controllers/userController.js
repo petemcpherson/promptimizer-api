@@ -231,6 +231,9 @@ const resetAllUsersTokenUsage = async () => {
     const update = {
         'tokenUsage.totalTokens': 0,
         'tokenUsage.resetDate': now,
+        // update word usage
+        'wordUsage.totalWords': 0,
+        'wordUsage.resetDate': now,
     };
 
     // Update all users in the database

@@ -32,6 +32,16 @@ const userSchema = new Schema({
             default: Date.now
         }
     },
+    wordUsage: {
+        totalWords: {
+            type: Number,
+            default: 0
+        },
+        resetDate: {
+            type: Date,
+            default: Date.now
+        }
+    },
     plan: {
         type: String,
         default: 'free'
@@ -99,15 +109,19 @@ userSchema.methods.resetPassword = async function (newPassword) {
     this.password = await bcrypt.hash(newPassword, 12);
     await this.save();
 }
+// Update the total tokens
 
 userSchema.methods.updateTokenUsage = async function (tokens) {
-    // Update the total tokens
     this.tokenUsage.totalTokens += tokens;
     await this.save();
 };
 
+// Update the total words
 
-
+userSchema.methods.updateWordUsage = async function (words) {
+    this.wordUsage.totalWords += words;
+    await this.save();
+};
 
 
 module.exports = mongoose.model('User', userSchema);

@@ -8,6 +8,8 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
+const countWords = (str) => str.trim().split(/\s+/).length;
+
 const chatCompletion = async (req, res) => {
 
   const { messages } = req.body;
@@ -23,16 +25,20 @@ const chatCompletion = async (req, res) => {
   });
 
   const totalTokens = completion.data.usage.total_tokens;
+  const apiResponse = completion.data.choices[0].message.content;
+  console.log('API response:', apiResponse);
+  const totalWords = countWords(apiResponse);
+  console.log('Total words:', totalWords);
 
-  // DEBUGGING
   const user = req.user;
-  console.log('User object:', user);
+  // console.log('User object:', user);
 
-  // Update the user's token usage
 
+  // Update the user's token and word usage
 
   if (user) {
     await user.updateTokenUsage(totalTokens);
+    await user.updateWordUsage(totalWords);
   } else {
     console.error('User not found');
   }
@@ -43,7 +49,8 @@ const chatCompletion = async (req, res) => {
 
   res.json({
     completion: completion.data.choices[0].message,
-    totalTokens: totalTokens
+    totalTokens: totalTokens,
+    totalWords: totalWords,
   })
 
 }
