@@ -1,6 +1,6 @@
 const express = require('express');
 const requireAuth = require('../middleware/requireAuth');
-// import the completion function from the chatController file
+const checkWordLimit = require('../middleware/checkWordLimit');
 const { chatCompletion } = require('../controllers/chatController');
 
 
@@ -15,7 +15,7 @@ router.use(requireAuth);
 router.post('/', (req, res, next) => {
     console.log('Request received at /api/chat');
     next();
-  }, chatCompletion);
+  }, checkWordLimit, chatCompletion);
   
 
 module.exports = router;
