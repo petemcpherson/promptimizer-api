@@ -160,15 +160,6 @@ app.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (reques
             } catch (error) {
                 console.error("Error updating user:", error.message);
             }
-
-
-
-
-
-
-
-
-
             break;
         default:
         // console.log(`Unhandled event type ${event.type}`);
