@@ -31,8 +31,6 @@ const chatCompletion = async (req, res) => {
   console.log('Total words:', totalWords);
 
   const user = req.user;
-  // console.log('User object:', user);
-
 
   // Update the user's token and word usage
 
@@ -42,7 +40,7 @@ const chatCompletion = async (req, res) => {
   } else {
     console.error('User not found');
   }
-  const userId = user._id; // Retrieve userId from req.user object
+  const userId = user._id;
   const updatedUser = await User.findById(userId);
   console.log('Updated user:', updatedUser);
 
