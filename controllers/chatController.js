@@ -12,12 +12,12 @@ const countWords = (str) => str.trim().split(/\s+/).length;
 
 const chatCompletion = async (req, res) => {
 
-  const { messages } = req.body;
+  const { messages, model } = req.body;
 
   // console.log(messages)
 
   const completion = await openai.createChatCompletion({
-    model: 'gpt-3.5-turbo',
+    model: model || 'gpt-3.5-turbo',
     messages: [
       { 'role': 'system', 'content': 'You are blogGPT, a helpful assistant to write blog posts' },
       ...messages.map(({ role, content }) => ({ role, content }))
@@ -28,7 +28,8 @@ const chatCompletion = async (req, res) => {
   const apiResponse = completion.data.choices[0].message.content;
   console.log('API response:', apiResponse);
   const totalWords = countWords(apiResponse);
-  console.log('Total words:', totalWords);
+  // console.log('Total words:', totalWords);
+  // console.log('model used: ', completion.data.model)
 
   const user = req.user;
 

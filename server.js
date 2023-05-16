@@ -88,24 +88,8 @@ app.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (reques
                 console.error("Error creating user:", error.message);
             }
 
-
             // console.log("Got session: " + session);
             break;
-        // case 'customer.subscription.created':
-        //     const subscriptionCreated = event.data.object;
-        //     const subscriptionCreatedEmail = subscriptionCreated.customer_email;
-        //     const subscriptionCreatedName = subscriptionCreated.customer_name;
-        //     console.log("Got subscription: " + subscriptionCreated);
-        //     console.log("Got email: " + subscriptionCreatedEmail);
-        //     console.log("Got name: " + subscriptionCreatedName);
-
-        //     try {
-        //         await createUserFromWebhook(subscriptionCreatedEmail, subscriptionCreatedName, "trial");
-        //     } catch (error) {
-        //         console.error("Error creating user:", error.message);
-        //     }
-
-        //     break;
         case 'customer.subscription.updated':
             const subscription = event.data.object;
             const customerId = subscription.customer;
