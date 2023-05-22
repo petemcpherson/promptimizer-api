@@ -115,12 +115,6 @@ app.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (reques
             } catch (error) {
                 console.error("Error updating user:", error.message);
             }
-
-           
-           
-
-           
-
             break;
         case 'customer.subscription.deleted':
             const deletedSubscription = event.data.object;
