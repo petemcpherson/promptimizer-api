@@ -27,7 +27,6 @@ const createToken = (_id, email) => {
 }
 
 
-
 // password reset
 
 const initiatePasswordReset = async (req, res) => {
@@ -97,34 +96,6 @@ const resetPassword = async (req, res) => {
     }
 }
 
-// complete registration
-
-// const completeRegistration = async (req, res) => {
-//     const { token } = req.params;
-//     const { firstName, lastName, email, password } = req.body;
-
-//     try {
-//         // verify the token
-//         const decoded = jwt.verify(token, process.env.SECRET);
-
-//         // Check if the user already exists
-//         const existingUser = await User.findOne({ email });
-
-//         if (existingUser) {
-//             return res.status(400).json({ error: 'User already exists' });
-//         }
-
-//         // Create a new user
-//         const user = await User.signup(firstName, lastName, email, password);
-
-//         // send a response
-//         res.status(200).json({ message: 'Registration completed successfully' });
-//     } catch (error) {
-//         res.status(400).json({ error: error.message });
-//     }
-// }
-
-
 // login user
 
 const loginUser = async (req, res) => {
@@ -143,72 +114,6 @@ const loginUser = async (req, res) => {
     }
 }
 
-
-// signup user
-
-// const signupUser = async (req, res) => {
-
-//     const { firstName, lastName, email, password, token, plan } = req.body;
-
-//     // Check for the token
-//     if (!token) {
-//         return res.status(400).json({ error: 'Token is missing' });
-//     }
-
-//     // Verify the token
-//     try {
-//         jwt.verify(token, process.env.SECRET);
-//         console.log('Token verified')
-//     } catch (error) {
-//         return res.status(400).json({ error: 'Invalid token' });
-//     }
-
-//     try {
-//         const user = await User.signup(firstName, lastName, email, password);
-//         // weird one
-//         await User.findByIdAndUpdate(user._id, { plan });
-
-//         //create a token
-//         const token = createToken(user._id);
-
-//         //email stuff
-
-//         const registrationUrl = `${process.env.PUBLIC_URL}/signup/${token}`;
-//         const mailOptions = {
-//             Source: 'pete@doyouevenblog.com',
-//             Destination: {
-//                 ToAddresses: [email],
-//             },
-//             Message: {
-//                 Subject: {
-//                     Data: 'Complete Your Registration',
-//                 },
-//                 Body: {
-//                     Text: {
-//                         Data: `Please use the following link to complete your registration: ${registrationUrl}`,
-//                     },
-//                 },
-//             },
-//         };
-
-//         ses.sendEmail(mailOptions, (err, data) => {
-//             if (err) {
-//                 console.log(err);
-//                 return res.status(400).json({ error: 'Error sending email' });
-//             } else {
-//                 console.log(data);
-//                 return res.status(200).json({ message: 'Email sent' });
-//             }
-//         });
-
-
-//         res.status(201).json({ email, token });
-
-//     } catch (error) {
-//         res.status(400).json({ error: error.message });
-//     }
-// }
-
 const validateToken = async (req, res) => {
     const { token } = req.params;
     console.log('Token received:', token);
@@ -220,6 +125,10 @@ const validateToken = async (req, res) => {
         res.status(200).json({ message: 'Valid token.' });
     } catch (error) {
         console.log('Error:', error.message);
+
+        if (error.name === 'TokenExpiredError' || error.name === 'JsonWebTokenError') {
+            return res.status(401).json({ message: 'Invalid or expired token.', error: error.message });
+        }
 
         res.status(500).json({ message: 'Server error.', error: error.message });
     }
