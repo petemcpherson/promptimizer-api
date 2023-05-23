@@ -16,14 +16,9 @@ const ses = new AWS.SES({ apiVersion: '2010-12-01' });
 
 // tokens
 
-// old token
-// const createToken = (_id) => {
-//     return jwt.sign({ _id }, process.env.SECRET, { expiresIn: '7d' });
-// }
-
 const createToken = (_id, email) => {
     const payload = email ? { email } : { _id };
-    return jwt.sign(payload, process.env.SECRET, { expiresIn: '7d' });
+    return jwt.sign(payload, process.env.SECRET, { expiresIn: '14d' });
 }
 
 
