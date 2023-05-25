@@ -1,6 +1,7 @@
 const express = require('express');
 const {
     getUserPrompts,
+    getAllPrompts,
     getPrompt,
     addPrompt,
     deletePrompt,
@@ -16,9 +17,13 @@ router.use(requireAuth);
 
 // routes
 
-// GET ALL PROMPTS
+// GET USER PROMPTS
 
 router.get('/', getUserPrompts);
+
+// GET ALL PROMPTS
+
+router.get('/all', getAllPrompts);
 
 // GET A SPECIFIC PROMPT
 

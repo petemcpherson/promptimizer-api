@@ -1,8 +1,6 @@
 const Prompt = require('../models/promptModel');
 const Mongoose = require('mongoose');
 
-
-
 // get all user prompts
 
 const getUserPrompts = async (req, res) => {
@@ -20,6 +18,27 @@ const getUserPrompts = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
+
+// get all prompts, including default prompts
+
+const getAllPrompts = async (req, res) => {
+    const user_id = req.user._id;
+
+    try {
+        const userPrompts = await Prompt.find({ user_id });
+        const defaultPrompts = await Prompt.find({ user_id: 'default' });
+        const prompts = [...userPrompts, ...defaultPrompts];
+
+        if (!prompts) {
+            return res.status(400).json({ error: 'No prompts found' });
+        }
+
+        res.status(200).json(prompts);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+
+}
 
 // get a single prompt
 
@@ -101,6 +120,7 @@ const updatePrompt = async (req, res) => {
 
 module.exports = {
     getUserPrompts,
+    getAllPrompts,
     getPrompt,
     addPrompt,
     deletePrompt,
