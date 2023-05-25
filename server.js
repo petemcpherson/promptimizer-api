@@ -6,6 +6,7 @@ const userRoutes = require('./routes/user');
 const postRoutes = require('./routes/posts');
 const chatRoutes = require('./routes/chat');
 const promptRoutes = require('./routes/prompts');
+const playlistRoutes = require('./routes/playlists');
 const path = require('path');
 const cron = require('node-cron');
 const { resetAllUsersTokenUsage, sendRegistrationEmail } = require('./controllers/userController');
@@ -186,6 +187,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/prompts', promptRoutes);
+app.use('/api/playlists', playlistRoutes);
 
 
 // serve static files from react frontend if in production
