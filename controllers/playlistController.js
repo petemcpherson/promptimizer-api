@@ -44,7 +44,8 @@ const createPlaylist = async (req, res) => {
         description,
         private,
         prompts,
-        order
+        order,
+        tags
     } = req.body;
 
     let emptyFields = [];
@@ -59,6 +60,7 @@ const createPlaylist = async (req, res) => {
             private,
             prompts,
             order,
+            tags,
             user_id
         });
         res.status(201).json(playlist);
@@ -76,7 +78,8 @@ const updatePlaylist = async (req, res) => {
         description,
         private,
         prompts,
-        order
+        order,
+        tags
     } = req.body;
 
     if (!Mongoose.Types.ObjectId.isValid(id)) {
@@ -89,7 +92,8 @@ const updatePlaylist = async (req, res) => {
             description,
             private,
             prompts,
-            order
+            order,
+            tags
         }, { new: true });
 
         if (!playlist) {

@@ -25,7 +25,8 @@ const PlaylistSchema = new Schema({
             ref: 'Prompt'
         }
     ],
-    order: [Number]
+    order: [Number],
+    tags: [String]
 }, { timestamps: true });
 
 module.exports = Mongoose.model('Playlist', PlaylistSchema);
