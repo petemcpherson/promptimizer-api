@@ -17,6 +17,6 @@ const PromptSchema = new Schema({
     description: {
         type: String,
     },
-});
+}, { timestamps: true });
 
 module.exports = Mongoose.model('Prompt', PromptSchema);
